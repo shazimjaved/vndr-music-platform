@@ -1,0 +1,123 @@
+
+{
+  "entities": {
+    "Work": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Work",
+      "type": "object",
+      "description": "Represents a musical work (track) in the VNDR ecosystem.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the Work." },
+        "artistId": { "type": "string", "description": "Reference to the User who is the primary artist." },
+        "artistName": { "type": "string", "description": "Denormalized artist name for display purposes." },
+        "title": { "type": "string" },
+        "genre": { "type": "string" },
+        "description": { "type": "string" },
+        "uploadDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "processing", "published", "archived", "error"], "description": "Processing status of the work."},
+        "trackUrl": { "type": "string", "description": "Public URL for the streamable audio." },
+        "coverArtUrl": { "type": "string", "description": "URL for the cover art." },
+        "price": { "type": "number", "description": "Licensing price in VSD-lite tokens." },
+        "plays": { "type": "number", "default": 0 },
+        "audioFeatures": {
+          "type": "object",
+          "properties": { "bpm": { "type": "number" }, "key": { "type": "string" } }
+        },
+        "musoCreditsFetched": { "type": "boolean", "default": false },
+        "musoExposureScore": { "type": "number" },
+        "acrCloudFingerprinted": { "type": "boolean", "default": false },
+        "enrichedMetadata": { "type": "object" },
+        "errorDetails": { "type": "string", "description": "Stores error messages from processing." }
+      },
+      "required": ["artistId", "title", "uploadDate", "status"]
+    },
+    "User": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "User",
+        "type": "object",
+        "description": "Represents a user profile, including their token balance.",
+        "properties": {
+            "id": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "username": { "type": "string" },
+            "role": { "type": "string", "enum": ["artist", "admin"] },
+            "onboardingCompleted": { "type": "object" },
+            "vsdBalance": { "type": "number", "default": 0 },
+            "dailyTokenClaimed": { "type": "string", "format": "date" },
+            "averageMusoExposureScore": { "type": "number", "description": "The average Muso.AI score across all of the artist's tracks." }
+        },
+        "required": ["id", "email", "vsdBalance"]
+    },
+     "VSDTransaction": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "VSDTransaction",
+      "type": "object",
+      "description": "Represents a VSD-lite token transaction.",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "transactionDate": { "type": "string", "format": "date-time" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["deposit", "withdrawal", "service_fee", "purchase", "sale", "reward"]},
+        "details": { "type": "string" }
+      },
+      "required": ["id", "userId", "transactionDate", "amount", "type"]
+    },
+    "LicenseRequest": {
+        "title": "LicenseRequest",
+        "type": "object",
+        "description": "Represents a request from a third party to license a work.",
+        "properties": {
+            "id": { "type": "string" },
+            "workId": { "type": "string" },
+            "artistId": { "type": "string" },
+            "requestorId": { "type": "string" },
+            "requestorName": { "type": "string" },
+            "requestorEmail": { "type": "string", "format": "email" },
+            "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+            "requestDate": { "type": "string", "format": "date-time" }
+        }
+    },
+    "KnowledgebaseArticle": {
+        "title": "KnowledgebaseArticle",
+        "type": "object",
+        "properties": {
+            "id": { "type": "string" },
+            "topic": { "type": "string" },
+            "title": { "type": "string" },
+            "content": { "type": "string" }
+        }
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores core user profile data, including their VSD balance."
+    },
+    "/works/{workId}": {
+      "schema": { "$ref": "#/entities/Work" },
+      "description": "Central collection for all musical works."
+    },
+    "/vsd_transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/VSDTransaction" },
+      "description": "Ledger of all VSD-lite token transactions."
+    },
+    "/license_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/LicenseRequest" },
+      "description": "Stores music license requests from third parties."
+    },
+    "/roles_admin/{userId}": {
+      "description": "Indicates admin privileges for a user. Document existence grants admin role."
+    },
+    "/knowledgebase/{articleId}": {
+      "schema": { "$ref": "#/entities/KnowledgebaseArticle" },
+      "description": "Stores articles for the knowledgebase."
+    }
+  }
+}

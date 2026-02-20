@@ -1,0 +1,68 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      // This checks for a custom claim set on the user's auth token.
+      return request.auth.token.admin == true;
+    }
+
+    // Blanket Admin Access: Admins can read and write to any document.
+    // This rule is evaluated first.
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // Users can only read, create, and update their own user document.
+    match /users/{userId} {
+      allow read, update, create: if isOwner(userId);
+    }
+
+    // Users can only create transactions for themselves.
+    // Reading is also restricted to the owner of the transactions.
+    match /vsd_transactions/{transactionId} {
+      allow read, create: if isOwner(request.resource.data.userId);
+    }
+    
+    // Security for listing vsd_transactions: Only allow if querying for a specific user.
+    // THIS IS THE KEY RULE that our API route relies on.
+    match /vsd_transactions {
+        allow list: if request.auth != null && request.query.where[0][0] == 'userId';
+    }
+
+    // Works can be read by anyone (for the public catalog).
+    // Creation and modification are restricted to the artist who owns the work.
+    match /works/{workId} {
+      allow read: if true;
+      allow create: if isOwner(request.resource.data.artistId);
+      allow update, delete: if isOwner(resource.data.artistId);
+    }
+    
+    // Security for listing works: Allow public reads, and allow filtered reads by artist.
+    match /works {
+        allow list: if request.query.where[0][0] == 'artistId' || request.auth == null;
+    }
+
+    // License requests can be created by any authenticated user.
+    // Reading/updating is restricted to the artist or the requestor.
+    match /license_requests/{requestId} {
+      allow create: if request.auth != null;
+      allow read, update: if isOwner(resource.data.artistId) || isOwner(resource.data.requestorId);
+    }
+
+    // Security for listing license requests: Only for the artist or requestor being queried.
+    match /license_requests {
+       allow list: if request.auth != null && (request.query.where[0][2] == request.auth.uid);
+    }
+
+    // Admin roles are stored in a separate collection. Only admins can read this.
+    match /roles_admin/{userId} {
+       allow read: if isAdmin();
+    }
+  }
+}

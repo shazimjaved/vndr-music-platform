@@ -1,0 +1,77 @@
+
+{
+    "subsidiaries": [
+        {
+            "id": "vndr",
+            "name": "VNDR Music",
+            "description": "Core music distribution, rights management, and artist analytics platform.",
+            "logoUrl": "https://i.ibb.co/LzYSVCtz/Background-Eraser-20251014-181324183.png",
+            "healthCheckUrl": "https://vndrmusic.com/api/health",
+            "functions": [
+                "Work Upload & Metadata Processing",
+                "AI Analytics & Reporting",
+                "Artist Profile Management"
+            ]
+        },
+        {
+            "id": "audio_exchange",
+            "name": "Audio Exchange (AUDEX)",
+            "description": "Marketplace for buying, selling, and trading tokenized music rights and royalties.",
+            "logoUrl": "https://i.ibb.co/fVjNMVpk/logo2.png",
+            "healthCheckUrl": "https://audio.exchange/api/health",
+            "functions": [
+                "Fractional Share Trading",
+                "Album NFT Marketplace",
+                "Escrow & Contract Settlement"
+            ]
+        },
+        {
+            "id": "ndradio",
+            "name": "ND Radio",
+            "description": "Live radio for independent music.",
+            "logoUrl": "https://i.ibb.co/4wvZ1Mzq/ND-Radio-transparent.png",
+            "healthCheckUrl": "https://indieradio.live/api/health",
+            "functions": [
+                "Live Radio Streaming",
+                "Artist Promotion",
+                "Automated Play Tracking"
+            ]
+        },
+        {
+            "id": "ivtv",
+            "name": "Indie Videos TV",
+            "description": "Music video streaming and distribution network for independent artists.",
+            "logoUrl": "https://i.ibb.co/FqwXfkL9/Screenshot-20250914-224236-Facebook.jpg",
+            "healthCheckUrl": "https://indievideos.tv/api/health",
+            "functions": [
+                "Video Upload & Hosting",
+                "Live Channel Streaming",
+                "Audience Analytics"
+            ]
+        },
+        {
+            "id": "miu",
+            "name": "MIU",
+            "description": "Music Industry University. Online education and resources for music professionals.",
+            "logoUrl": "https://i.ibb.co/4gJqBfM8/MIU-logo-wt.png",
+            "healthCheckUrl": "https://musicindustry.university/api/health",
+            "functions": [
+                "Online Courses",
+                "Industry Webinars",
+                "Professional Networking"
+            ]
+        },
+        {
+            "id": "img",
+            "name": "IMG",
+            "description": "Indie Artist Network. The parent ecosystem connecting all platforms and services.",
+            "logoUrl": "https://placehold.co/100x50/000000/FFFFFF?text=IMG",
+            "healthCheckUrl": "https://indieartist.network/api/health",
+            "functions": [
+                "Ecosystem Governance",
+                "Cross-Platform SSO",
+                "Global Artist Directory"
+            ]
+        }
+    ]
+}
